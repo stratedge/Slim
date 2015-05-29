@@ -443,6 +443,13 @@ class Slim
         $route = new \Slim\Route($pattern, $callable, $this->settings['routes.case_sensitive']);
         $this->router->map($route);
         if (count($args) > 0) {
+            foreach ($args as $key => $arg) {
+                //If actual middleware is found, register it as such
+                if (is_a($arg, 'Slim\Middleware')) {
+                    $this->add($arg);
+                    unset($args[$key]);
+                }
+            }
             $route->setMiddleware($args);
         }
 
